@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acronym Bingo Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .category-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .category-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .category-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .category-count {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .question-display {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .acronym {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .question-text {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .score-percentage {
+            font-size: 1.5em;
+            color: #666;
+        }
+        
+        .results-list {
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .result-correct {
+            background: #f0fdf4;
+            border-color: #22c55e;
+        }
+        
+        .result-incorrect {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+        
+        .result-acronym {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .result-answer {
+            font-size: 0.95em;
+            margin-top: 5px;
+        }
+        
+        .result-correct-answer {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        
+        .result-wrong-answer {
+            color: #dc2626;
+        }
+        
+        .result-icon {
+            float: right;
+            font-size: 1.5em;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Acronym Bingo</h1>
+        <p class="subtitle">Test your knowledge across different domains</p>
+        
+        <!-- Category Selection Screen -->
+        <div id="categoryScreen">
+            <div class="category-grid" id="categoryGrid">
+                <!-- Categories will be loaded here dynamically -->
+            </div>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="card">
+                <div class="progress-info">
+                    <span id="questionProgress">Question 1 of 10</span>
+                    <span id="currentScore">Score: 0/0</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+                </div>
+                
+                <div class="question-display">
+                    <div class="acronym" id="acronymDisplay">ETL</div>
+                    <p class="question-text">What does this acronym stand for?</p>
+                </div>
+                
+                <input 
+                    type="text" 
+                    id="answerInput" 
+                    class="answer-input" 
+                    placeholder="Type your answer..."
+                    onkeypress="handleKeyPress(event)"
+                />
+                
+                <button class="btn btn-primary" onclick="submitAnswer()">Submit Answer</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="card">
+                <h2 style="text-align: center; margin-bottom: 20px;">Quiz Complete!</h2>
+                <div class="score-display">
+                    <div class="score-number" id="finalScore">0/10</div>
+                    <div class="score-percentage" id="finalPercentage">(0% correct)</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 20px;">Your Answers</h3>
+                <div class="results-list" id="resultsList"></div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="restartQuiz()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Update this URL to point to your JSON file
+        const QUIZ_DATA_URL = 'acronym-quiz-data.json';
+        
+        let quizData = {};
+        let categories = [];
+        let currentCategory = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        // Load quiz data from JSON file
+        async function loadQuizData() {
+            try {
+                const response = await fetch(QUIZ_DATA_URL);
+                const data = await response.json();
+                quizData = data.quizData;
+                categories = data.categories;
+                renderCategories();
+            } catch (error) {
+                console.error('Error loading quiz data:', error);
+                document.getElementById('categoryGrid').innerHTML = 
+                    '<p style="color: white; text-align: center;">Error loading quiz data. Please try again later.</p>';
+            }
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+            
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.onclick = () => startQuiz(cat.id);
+                
+                const questionCount = quizData[cat.id] ? quizData[cat.id].length : 0;
+                
+                card.innerHTML = `
+                    <div class="category-icon">${cat.icon}</div>
+                    <div class="category-name">${cat.name}</div>
+                    <div class="category-count">${questionCount} questions</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function startQuiz(category) {
+            currentCategory = category;
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            document.getElementById('categoryScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            document.getElementById('resultsScreen').classList.add('hidden');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const questions = quizData[currentCategory];
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('acronymDisplay').textContent = question.acronym;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            document.getElementById('questionProgress').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            document.getElementById('currentScore').textContent = 
+                `Score: ${score}/${currentQuestionIndex}`;
+        }
+
+        function normalizeAnswer(str) {
+            return str.toLowerCase().replace(/[^a-z]/g, '');
+        }
+
+        function submitAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            if (!userAnswer) return;
+            
+            const questions = quizData[currentCategory];
+            const question = questions[currentQuestionIndex];
+            
+            const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
+            
+            userAnswers.push({
+                acronym: question.acronym,
+                userAnswer: userAnswer,
+                correctAnswer: question.answer,
+                isCorrect: isCorrect
+            });
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                submitAnswer();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            
+            const total = userAnswers.length;
+            const percentage = Math.round((score / total) * 100);
+            
+            document.getElementById('finalScore').textContent = `${score}/${total}`;
+            document.getElementById('finalPercentage').textContent = `(${percentage}% correct)`;
+            
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = '';
+            
+            userAnswers.forEach(answer => {
+                const resultItem = document.createElement('div');
+                resultItem.className = `result-item ${answer.isCorrect ? 'result-correct' : 'result-incorrect'}`;
+                
+                let html = `
+                    <div class="result-acronym">${answer.acronym}</div>
+                    <div class="result-icon">${answer.isCorrect ? '✓' : '✗'}</div>
+                `;
+                
+                if (!answer.isCorrect) {
+                    html += `
+                        <div class="result-answer result-wrong-answer">Your answer: ${answer.userAnswer}</div>
+                        <div class="result-answer result-correct-answer">Correct: ${answer.correctAnswer}</div>
+                    `;
+                } else {
+                    html += `<div class="result-answer result-correct-answer">${answer.correctAnswer}</div>`;
+                }
+                
+                resultItem.innerHTML = html;
+                resultsList.appendChild(resultItem);
+            });
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('categoryScreen').classList.remove('hidden');
+        }
+
+        // Initialize the quiz when page loads
+        window.addEventListener('DOMContentLoaded', loadQuizData);
+    </script>
+</body>
+</html>
