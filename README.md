@@ -32,7 +32,7 @@ An interactive web-based quiz application to test your knowledge of acronyms acr
 
 ## Demo
 
-Visit the live demo: [https://yourusername.github.io/acronym-quiz](https://yourusername.github.io/acronym-quiz)
+Visit the live demo: [https://Xudo-Data-Boutique.github.io/acronym-quiz](https://yourusername.github.io/acronym-quiz)
 
 ## Installation
 
