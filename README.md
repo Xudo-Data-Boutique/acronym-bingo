@@ -43,14 +43,14 @@ Visit the live demo: [https://Xudo-Data-Boutique.github.io/acronym-bingo](https:
 3. Under "Source", select "Deploy from a branch"
 4. Choose "main" branch and "/ (root)"
 5. Save and wait a few minutes
-6. Your quiz will be available at `https://yourusername.github.io/acronym-quiz`
+6. Your quiz will be available at `https://yourusername.github.io/acronym-bingo`
 
 ### Option 2: Local Development
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/acronym-quiz.git
-cd acronym-quiz
+git clone https://github.com/yourusername/acronym-bingo.git
+cd acronym-bingo
 ```
 
 2. Open `index.html` in your browser:
@@ -78,7 +78,7 @@ Then visit `http://localhost:8000`
 
 ## File Structure
 ```
-acronym-quiz/
+acronym-bingo/
 ├── index.html                  # Main quiz application
 ├── acronym-quiz-data.json      # Quiz data (categories and acronyms)
 └── README.md                   # This file
