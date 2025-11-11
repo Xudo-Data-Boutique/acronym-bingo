@@ -302,6 +302,7 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let userAnswers = [];
+        let selectedQuestions = []; 
 
         // Load quiz data from JSON file
         async function loadQuizData() {
@@ -332,7 +333,7 @@
                 card.innerHTML = `
                     <div class="category-icon">${cat.icon}</div>
                     <div class="category-name">${cat.name}</div>
-                    <div class="category-count">${questionCount} questions</div>
+                    <div class="category-count">10 questions</div>
                 `;
                 
                 grid.appendChild(card);
@@ -344,6 +345,11 @@
             currentQuestionIndex = 0;
             score = 0;
             userAnswers = [];
+
+            // Shuffle and select 10 random questions
+            const allQuestions = quizData[currentCategory];
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            selectedQuestions = shuffled.slice(0, 10);
             
             document.getElementById('categoryScreen').classList.add('hidden');
             document.getElementById('quizScreen').classList.remove('hidden');
@@ -353,7 +359,6 @@
         }
 
         function showQuestion() {
-            const questions = quizData[currentCategory];
             const question = questions[currentQuestionIndex];
             
             document.getElementById('acronymDisplay').textContent = question.acronym;
@@ -377,7 +382,6 @@
             const userAnswer = document.getElementById('answerInput').value.trim();
             if (!userAnswer) return;
             
-            const questions = quizData[currentCategory];
             const question = questions[currentQuestionIndex];
             
             const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
@@ -455,3 +459,4 @@
 </body>
 
 </html>
+
