@@ -359,7 +359,7 @@
         }
 
         function showQuestion() {
-            const question = questions[currentQuestionIndex];
+            const question = selectedQuestions[currentQuestionIndex];
             
             document.getElementById('acronymDisplay').textContent = question.acronym;
             document.getElementById('answerInput').value = '';
@@ -382,7 +382,7 @@
             const userAnswer = document.getElementById('answerInput').value.trim();
             if (!userAnswer) return;
             
-            const question = questions[currentQuestionIndex];
+            const question = selectedQuestions[currentQuestionIndex];
             
             const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
             
@@ -459,4 +459,5 @@
 </body>
 
 </html>
+
 
